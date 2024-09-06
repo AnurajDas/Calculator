@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.calc {
+    background-color: #333;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.3);
+    max-width: 420px;
+    width: 100%;
+}
+
+.screen {
+    background-color: #000;
+    color: white;
+    font-size: 3rem;
+    padding: 30px;
+    text-align: right;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.keys {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+}
+
+.key {
+    background-color: #e0e0e0;
+    font-size: 1.5rem;
+    padding: 25px;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.op {
+    background-color: #f5913e;
+    color: white;
+}
+
+.key:hover {
+    background-color: #d4d4d4;
+}
+
+.op:hover {
+    background-color: #ff9f4a;
+}
+
+</style>
+<body>
+    <div class="calc">
+        <div class="screen" id="screen">0</div>
+        <div class="keys">
+            <button class="key" onclick="clearAll()">AC</button>
+            <button class="key" onclick="del()">⌫</button>
+            <button class="key" onclick="operate('%')">%</button>
+            <button class="key op" onclick="operate('/')">÷</button>
+
+            <button class="key" onclick="press('7')">7</button>
+            <button class="key" onclick="press('8')">8</button>
+            <button class="key" onclick="press('9')">9</button>
+            <button class="key op" onclick="operate('*')">×</button>
+
+            <button class="key" onclick="press('4')">4</button>
+            <button class="key" onclick="press('5')">5</button>
+            <button class="key" onclick="press('6')">6</button>
+            <button class="key op" onclick="operate('-')">−</button>
+
+            <button class="key" onclick="press('1')">1</button>
+            <button class="key" onclick="press('2')">2</button>
+            <button class="key" onclick="press('3')">3</button>
+            <button class="key op" onclick="operate('+')">+</button>
+
+            <button class="key" onclick="press('0')" style="grid-column: span 2;">0</button>
+            <button class="key" onclick="press('.')">.</button>
+            <button class="key op" onclick="calculate()">=</button>
+
+            
+            <button class="key op" onclick="sqrt()">√</button>
+            <button class="key op" onclick="square()">x²</button>
+            <button class="key op" onclick="power()">xʸ</button>
+            <button class="key op" onclick="inv()">¹/x</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+<script>
+    let current = '0';
+let prev = '';
+let op = null;
+
+function updateScreen() {
+    document.getElementById('screen').innerText = current;
+}
+
+function clearAll() {
+    current = '0';
+    prev = '';
+    op = null;
+    updateScreen();
+}
+
+function del() {
+    if (current.length > 1) {
+        current = current.slice(0, -1);
+    } else {
+        current = '0';
+    }
+    updateScreen();
+}
+
+function press(num) {
+    if (current === '0') {
+        current = num;
+    } else {
+        current += num;
+    }
+    updateScreen();
+}
+
+function operate(operator) {
+    if (op !== null) {
+        calculate();
+    }
+    prev = current;
+    op = operator;
+    current = '0';
+}
+
+function calculate() {
+    if (op === null || prev === '') return;
+
+    let result;
+    const a = parseFloat(prev);
+    const b = parseFloat(current);
+
+    switch (op) {
+        case '+':
+            result = a + b;
+            break;
+        case '-':
+            result = a - b;
+            break;
+        case '*':
+            result = a * b;
+            break;
+        case '/':
+            result = a / b;
+            break;
+        case '%':
+            result = a % b;
+            break;
+        case '^':
+            result = Math.pow(a, b);
+            break;
+        default:
+            return;
+    }
+
+    current = result.toString();
+    op = null;
+    prev = '';
+    updateScreen();
+}
+
+function sqrt() {
+    current = Math.sqrt(parseFloat(current)).toString();
+    updateScreen();
+}
+
+function square() {
+    current = Math.pow(parseFloat(current), 2).toString();
+    updateScreen();
+}
+
+function power() {
+    prev = current;
+    op = '^';
+    current = '0';
+}
+
+function inv() {
+    current = (1 / parseFloat(current)).toString();
+    updateScreen();
+}
+
+function toggleSign() {
+    current = (parseFloat(current) * -1).toString();
+    updateScreen();
+}
+
+</script>
+</html>
